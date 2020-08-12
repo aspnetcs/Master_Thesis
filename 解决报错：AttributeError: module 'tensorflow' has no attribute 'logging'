@@ -1,0 +1,8 @@
+https://blog.csdn.net/baoyongshuai1509/article/details/105951637/
+在tensorflow 2.1下跑训练网络，报错：AttributeError: module 'tensorflow' has no attribute 'logging'
+
+这个是因为tensorflow2.1已经没有tf.logging了，解决方法如下：
+
+将tf.logging替换成tf.compat.v1.logging。
+
+问题解决。
