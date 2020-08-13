@@ -1,0 +1,38 @@
+https://www.kanzhun.com/jiaocheng/405752.html
+使用tf.logging日志打印两遍问题
+问题描述、原因分析
+import tensorflow as tf
+tf.logging.set_verbosity(tf.logging.INFO)
+import logging
+logging.basicConfig(level=logging.INFO)
+logging.info("----")
+tf.logging.info("=====================")
+运行结果如下：
+
+INFO:root:----
+INFO:tensorflow:=====================
+INFO:tensorflow:=====================
+原因：tf.logging 本身就调用了 logging ，会产生两套 handlers，使得每次tf.logging.info("...") 时会将其中内容打印两遍。
+
+解决方案
+对于已经完成的项目，将logging的handlers清除即可。
+
+import tensorflow as tf
+tf.logging.set_verbosity(tf.logging.INFO)
+import logging
+logging.basicConfig(level=logging.INFO)
+
+logging.info("----")
+
+logger = logging.getLogger()
+while logger.handlers:
+     logger.handlers.pop()
+
+tf.logging.info("=====================")
+
+# 后面的代码都要使用 tf.logging
+运行结果：
+
+INFO:root:----
+INFO:tensorflow:=====================
+建议：推荐新项目只用logging，TensorFlow本质实在logging进行封装，且阉割了一些功能。
